@@ -34,7 +34,7 @@ func (s *stepConfigVolcenginePublicIp) Run(ctx context.Context, stateBag multist
 			stateBag.Put("PublicIp", *out.EipAddresses[0].EipAddress)
 			ui.Say(fmt.Sprintf("Using existing Public IP id is %s", s.VolcengineEcsConfig.PublicIpId))
 		} else {
-			ui.Say(fmt.Sprintf("Creating new Eip "))
+			ui.Say("Creating new Eip...")
 			//create new eip
 			if s.VolcengineEcsConfig.PublicIpBandWidth < 1 {
 				s.VolcengineEcsConfig.PublicIpBandWidth = 1
