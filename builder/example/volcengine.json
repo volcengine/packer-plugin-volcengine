@@ -1,0 +1,30 @@
+{
+  "variables": {
+    "access_key": "{{ env `VOLCENGINE_ACCESS_KEY` }}",
+    "secret_key": "{{ env `VOLCENGINE_SECRET_KEY` }}"
+  },
+  "builders": [{
+    "type":"volcengine-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region":"cn-beijing",
+    "target_image_name":"packer_xym_test",
+    "source_image_id":"image-38deyjkaisf6kiyswzn9",
+    "availability_zone": "cn-beijing-b",
+    "instance_type":"ecs.g2i.large",
+    "ssh_username":"root",
+    "temporary_key_pair_name": "packer-key",
+    "ssh_clear_authorized_keys": true,
+    "associate_public_ip_address": true,
+    "public_ip_id": "eip-13frvze8oo8hs3n6nu4m13mgo",
+    "system_disk_size": "50",
+    "system_disk_type": "ESSD_PL0"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "yum install mysql -y"
+    ]
+  }]
+}

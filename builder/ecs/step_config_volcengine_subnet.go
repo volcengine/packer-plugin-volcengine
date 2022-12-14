@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
+	"github.com/volcengine/volcengine-go-sdk/service/ecs"
 	"github.com/volcengine/volcengine-go-sdk/service/vpc"
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
 )
@@ -25,9 +26,15 @@ func (s *stepConfigVolcengineSubnet) Run(ctx context.Context, stateBag multistep
 		}
 		out, err := client.VpcClient.DescribeSubnetsWithContext(ctx, &input)
 		if err != nil || len(out.Subnets) == 0 {
-			return Halt(stateBag, err, fmt.Sprintf("Error query Subnet with id %s", s.VolcengineEcsConfig.VpcId))
+			return Halt(stateBag, err, fmt.Sprintf("Error query Subnet with id %s", s.VolcengineEcsConfig.SubnetId))
 		}
-		ui.Say(fmt.Sprintf("Using existing Subnet id is %s", s.VolcengineEcsConfig.VpcId))
+
+		if *out.Subnets[0].VpcId != s.VolcengineEcsConfig.VpcId {
+			return Halt(stateBag, fmt.Errorf(fmt.Sprintf("Subnet id %s vpc not match",
+				s.VolcengineEcsConfig.SubnetId)), "")
+		}
+		s.VolcengineEcsConfig.AvailabilityZone = *out.Subnets[0].ZoneId
+		ui.Say(fmt.Sprintf("Using existing Subnet id is %s", s.VolcengineEcsConfig.SubnetId))
 		return multistep.ActionContinue
 	}
 	//create new subnet
@@ -47,6 +54,12 @@ func (s *stepConfigVolcengineSubnet) Run(ctx context.Context, stateBag multistep
 	}
 	if s.VolcengineEcsConfig.AvailabilityZone != "" {
 		input.ZoneId = volcengine.String(s.VolcengineEcsConfig.AvailabilityZone)
+	} else {
+		out, err := client.EcsClient.DescribeZones(&ecs.DescribeZonesInput{})
+		if err != nil {
+			return Halt(stateBag, err, "Error creating new Subnet")
+		}
+		input.ZoneId = out.Zones[0].ZoneId
 	}
 	output, err := client.VpcClient.CreateSubnetWithContext(ctx, &input)
 	if err != nil {

@@ -9,12 +9,12 @@ import (
 )
 
 type VolcengineAuthenticationConfig struct {
-	VolcengineAccessKey  string `mapstructure:"volcengine_access_key" required:"true"`
-	VolcengineSecretKey  string `mapstructure:"volcengine_secret_key" required:"true"`
-	VolcengineSessionKey string `mapstructure:"volcengine_session_key" required:"false"`
-	VolcengineEndpoint   string `mapstructure:"volcengine_endpoint" required:"false"`
-	VolcengineDisableSSL *bool  `mapstructure:"volcengine_disable_ssl" required:"false"`
-	VolcengineRegion     string `mapstructure:"volcengine_region" required:"true"`
+	VolcengineAccessKey  string `mapstructure:"access_key" required:"true"`
+	VolcengineSecretKey  string `mapstructure:"secret_key" required:"true"`
+	VolcengineSessionKey string `mapstructure:"session_key" required:"false"`
+	VolcengineEndpoint   string `mapstructure:"endpoint" required:"false"`
+	VolcengineDisableSSL *bool  `mapstructure:"disable_ssl" required:"false"`
+	VolcengineRegion     string `mapstructure:"region" required:"true"`
 }
 
 func (v *VolcengineAuthenticationConfig) Config() error {

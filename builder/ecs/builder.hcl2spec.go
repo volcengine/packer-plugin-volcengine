@@ -18,12 +18,12 @@ type FlatConfig struct {
 	PackerOnError             *string                        `mapstructure:"packer_on_error" cty:"packer_on_error" hcl:"packer_on_error"`
 	PackerUserVars            map[string]string              `mapstructure:"packer_user_variables" cty:"packer_user_variables" hcl:"packer_user_variables"`
 	PackerSensitiveVars       []string                       `mapstructure:"packer_sensitive_variables" cty:"packer_sensitive_variables" hcl:"packer_sensitive_variables"`
-	VolcengineAccessKey       *string                        `mapstructure:"volcengine_access_key" required:"true" cty:"volcengine_access_key" hcl:"volcengine_access_key"`
-	VolcengineSecretKey       *string                        `mapstructure:"volcengine_secret_key" required:"true" cty:"volcengine_secret_key" hcl:"volcengine_secret_key"`
-	VolcengineSessionKey      *string                        `mapstructure:"volcengine_session_key" required:"false" cty:"volcengine_session_key" hcl:"volcengine_session_key"`
-	VolcengineEndpoint        *string                        `mapstructure:"volcengine_endpoint" required:"false" cty:"volcengine_endpoint" hcl:"volcengine_endpoint"`
-	VolcengineDisableSSL      *bool                          `mapstructure:"volcengine_disable_ssl" required:"false" cty:"volcengine_disable_ssl" hcl:"volcengine_disable_ssl"`
-	VolcengineRegion          *string                        `mapstructure:"volcengine_region" required:"true" cty:"volcengine_region" hcl:"volcengine_region"`
+	VolcengineAccessKey       *string                        `mapstructure:"access_key" required:"true" cty:"access_key" hcl:"access_key"`
+	VolcengineSecretKey       *string                        `mapstructure:"secret_key" required:"true" cty:"secret_key" hcl:"secret_key"`
+	VolcengineSessionKey      *string                        `mapstructure:"session_key" required:"false" cty:"session_key" hcl:"session_key"`
+	VolcengineEndpoint        *string                        `mapstructure:"endpoint" required:"false" cty:"endpoint" hcl:"endpoint"`
+	VolcengineDisableSSL      *bool                          `mapstructure:"disable_ssl" required:"false" cty:"disable_ssl" hcl:"disable_ssl"`
+	VolcengineRegion          *string                        `mapstructure:"region" required:"true" cty:"region" hcl:"region"`
 	VpcId                     *string                        `mapstructure:"vpc_id" required:"false" cty:"vpc_id" hcl:"vpc_id"`
 	VpcName                   *string                        `mapstructure:"vpc_name" required:"false" cty:"vpc_name" hcl:"vpc_name"`
 	VpcCidrBlock              *string                        `mapstructure:"vpc_cidr_block" required:"false" cty:"vpc_cidr_block" hcl:"vpc_cidr_block"`
@@ -35,6 +35,7 @@ type FlatConfig struct {
 	AvailabilityZone          *string                        `mapstructure:"availability_zone" required:"false" cty:"availability_zone" hcl:"availability_zone"`
 	SecurityGroupId           *string                        `mapstructure:"security_group_id" required:"false" cty:"security_group_id" hcl:"security_group_id"`
 	SecurityGroupName         *string                        `mapstructure:"security_group_name" required:"false" cty:"security_group_name" hcl:"security_group_name"`
+	PublicIpId                *string                        `mapstructure:"public_ip_id" required:"false" cty:"public_ip_id" hcl:"public_ip_id"`
 	AssociatePublicIpAddress  *bool                          `mapstructure:"associate_public_ip_address" required:"false" cty:"associate_public_ip_address" hcl:"associate_public_ip_address"`
 	PublicIpBandWidth         *int64                         `mapstructure:"public_ip_band_width" required:"false" cty:"public_ip_band_width" hcl:"public_ip_band_width"`
 	Type                      *string                        `mapstructure:"communicator" cty:"communicator" hcl:"communicator"`
@@ -116,12 +117,12 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"packer_on_error":              &hcldec.AttrSpec{Name: "packer_on_error", Type: cty.String, Required: false},
 		"packer_user_variables":        &hcldec.AttrSpec{Name: "packer_user_variables", Type: cty.Map(cty.String), Required: false},
 		"packer_sensitive_variables":   &hcldec.AttrSpec{Name: "packer_sensitive_variables", Type: cty.List(cty.String), Required: false},
-		"volcengine_access_key":        &hcldec.AttrSpec{Name: "volcengine_access_key", Type: cty.String, Required: false},
-		"volcengine_secret_key":        &hcldec.AttrSpec{Name: "volcengine_secret_key", Type: cty.String, Required: false},
-		"volcengine_session_key":       &hcldec.AttrSpec{Name: "volcengine_session_key", Type: cty.String, Required: false},
-		"volcengine_endpoint":          &hcldec.AttrSpec{Name: "volcengine_endpoint", Type: cty.String, Required: false},
-		"volcengine_disable_ssl":       &hcldec.AttrSpec{Name: "volcengine_disable_ssl", Type: cty.Bool, Required: false},
-		"volcengine_region":            &hcldec.AttrSpec{Name: "volcengine_region", Type: cty.String, Required: false},
+		"access_key":                   &hcldec.AttrSpec{Name: "access_key", Type: cty.String, Required: false},
+		"secret_key":                   &hcldec.AttrSpec{Name: "secret_key", Type: cty.String, Required: false},
+		"session_key":                  &hcldec.AttrSpec{Name: "session_key", Type: cty.String, Required: false},
+		"endpoint":                     &hcldec.AttrSpec{Name: "endpoint", Type: cty.String, Required: false},
+		"disable_ssl":                  &hcldec.AttrSpec{Name: "disable_ssl", Type: cty.Bool, Required: false},
+		"region":                       &hcldec.AttrSpec{Name: "region", Type: cty.String, Required: false},
 		"vpc_id":                       &hcldec.AttrSpec{Name: "vpc_id", Type: cty.String, Required: false},
 		"vpc_name":                     &hcldec.AttrSpec{Name: "vpc_name", Type: cty.String, Required: false},
 		"vpc_cidr_block":               &hcldec.AttrSpec{Name: "vpc_cidr_block", Type: cty.String, Required: false},
@@ -133,6 +134,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"availability_zone":            &hcldec.AttrSpec{Name: "availability_zone", Type: cty.String, Required: false},
 		"security_group_id":            &hcldec.AttrSpec{Name: "security_group_id", Type: cty.String, Required: false},
 		"security_group_name":          &hcldec.AttrSpec{Name: "security_group_name", Type: cty.String, Required: false},
+		"public_ip_id":                 &hcldec.AttrSpec{Name: "public_ip_id", Type: cty.String, Required: false},
 		"associate_public_ip_address":  &hcldec.AttrSpec{Name: "associate_public_ip_address", Type: cty.Bool, Required: false},
 		"public_ip_band_width":         &hcldec.AttrSpec{Name: "public_ip_band_width", Type: cty.Number, Required: false},
 		"communicator":                 &hcldec.AttrSpec{Name: "communicator", Type: cty.String, Required: false},

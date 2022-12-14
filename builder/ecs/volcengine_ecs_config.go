@@ -23,8 +23,9 @@ type VolcengineEcsConfig struct {
 	SecurityGroupId   string `mapstructure:"security_group_id" required:"false"`
 	SecurityGroupName string `mapstructure:"security_group_name" required:"false"`
 	//eip
-	AssociatePublicIpAddress bool  `mapstructure:"associate_public_ip_address" required:"false"`
-	PublicIpBandWidth        int64 `mapstructure:"public_ip_band_width" required:"false"`
+	PublicIpId               string `mapstructure:"public_ip_id" required:"false"`
+	AssociatePublicIpAddress bool   `mapstructure:"associate_public_ip_address" required:"false"`
+	PublicIpBandWidth        int64  `mapstructure:"public_ip_band_width" required:"false"`
 	//ssh
 	Comm communicator.Config `mapstructure:",squash"`
 	//ecs

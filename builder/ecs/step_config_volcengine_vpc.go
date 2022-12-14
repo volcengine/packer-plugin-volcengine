@@ -18,6 +18,21 @@ type stepConfigVolcengineVpc struct {
 func (s *stepConfigVolcengineVpc) Run(ctx context.Context, stateBag multistep.StateBag) multistep.StepAction {
 	ui := stateBag.Get("ui").(packer.Ui)
 	client := stateBag.Get("client").(*VolcengineClientWrapper)
+	if s.VolcengineEcsConfig.VpcId == "" && s.VolcengineEcsConfig.SubnetId != "" {
+		input := vpc.DescribeSubnetsInput{
+			SubnetIds: volcengine.StringSlice([]string{s.VolcengineEcsConfig.SubnetId}),
+		}
+		out, err := client.VpcClient.DescribeSubnetsWithContext(ctx, &input)
+		if err != nil || len(out.Subnets) == 0 {
+			return Halt(stateBag, err, fmt.Sprintf("Error query Subnet with id %s", s.VolcengineEcsConfig.VpcId))
+		}
+
+		s.VolcengineEcsConfig.VpcId = *out.Subnets[0].VpcId
+
+		ui.Say(fmt.Sprintf("Using existing Vpc id is %s", s.VolcengineEcsConfig.VpcId))
+		return multistep.ActionContinue
+	}
+
 	if s.VolcengineEcsConfig.VpcId != "" {
 		//valid
 		input := vpc.DescribeVpcsInput{

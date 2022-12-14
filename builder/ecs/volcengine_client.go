@@ -11,7 +11,7 @@ const (
 	defaultVpcName           = "volcengine_packer_vpc"
 	defaultVpcCidr           = "172.20.0.0/16"
 	defaultSubnetName        = "volcengine_packer_subnet"
-	defaultSubnetCidr        = "172.20.index.0/24"
+	defaultSubnetCidr        = "172.20.0.0/24"
 	defaultSecurityGroupName = "volcengine_packer_security_group"
 
 	defaultRetryInterval = 10 * time.Second

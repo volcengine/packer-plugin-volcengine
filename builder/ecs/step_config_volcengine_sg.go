@@ -27,6 +27,10 @@ func (s *stepConfigVolcengineSg) Run(ctx context.Context, stateBag multistep.Sta
 		if err != nil || len(out.SecurityGroups) == 0 {
 			return Halt(stateBag, err, fmt.Sprintf("Error query SecurityGroup with id %s", s.VolcengineEcsConfig.SecurityGroupId))
 		}
+		if *out.SecurityGroups[0].VpcId != s.VolcengineEcsConfig.VpcId {
+			return Halt(stateBag, fmt.Errorf(fmt.Sprintf("SecurityGroup id %s vpc not match",
+				s.VolcengineEcsConfig.SecurityGroupId)), "")
+		}
 		ui.Say(fmt.Sprintf("Using existing SecurityGroup id is %s", s.VolcengineEcsConfig.SecurityGroupId))
 		return multistep.ActionContinue
 	}

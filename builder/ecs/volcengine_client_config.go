@@ -16,13 +16,14 @@ type VolcengineClientConfig struct {
 
 func (v *VolcengineClientConfig) Client(stateBag *multistep.BasicStateBag) *VolcengineClientWrapper {
 	if v.client != nil {
-		stateBag.Put("volcengine_client", v.client)
+		stateBag.Put("client", v.client)
 		return v.client
 	}
 
 	config := volcengine.NewConfig().
 		WithCredentials(credentials.NewStaticCredentials(v.VolcengineAccessKey, v.VolcengineSecretKey, v.VolcengineSessionKey)).
-		WithDisableSSL(*v.VolcengineDisableSSL)
+		WithDisableSSL(*v.VolcengineDisableSSL).
+		WithRegion(v.VolcengineRegion)
 
 	if v.VolcengineEndpoint != "" {
 		config.WithEndpoint(v.VolcengineEndpoint)
@@ -34,7 +35,7 @@ func (v *VolcengineClientConfig) Client(stateBag *multistep.BasicStateBag) *Volc
 		VpcClient: vpc.New(sess),
 		EcsClient: ecs.New(sess),
 	}
-	stateBag.Put("volcengine_client", v.client)
+	stateBag.Put("client", v.client)
 
 	return v.client
 }
