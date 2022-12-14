@@ -22,7 +22,7 @@ func WaitEipStatus(stateBag multistep.StateBag, eipId, status string) (*vpc.Desc
 			if err != nil {
 				return WaitForRetry
 			}
-			output := i.(vpc.DescribeEipAddressesOutput)
+			output := i.(*vpc.DescribeEipAddressesOutput)
 			if len(output.EipAddresses) < 1 {
 				return WaitForRetry
 			}
@@ -48,13 +48,15 @@ func WaitVpcStatus(stateBag multistep.StateBag, vpcId, status string) (*vpc.Desc
 			input := vpc.DescribeVpcsInput{
 				VpcIds: volcengine.StringSlice([]string{vpcId}),
 			}
-			return client.VpcClient.DescribeVpcs(&input)
+			out, err := client.VpcClient.DescribeVpcs(&input)
+			return out, err
 		},
 		Process: func(i interface{}, err error) ProcessResult {
+
 			if err != nil {
 				return WaitForRetry
 			}
-			output := i.(vpc.DescribeVpcsOutput)
+			output := i.(*vpc.DescribeVpcsOutput)
 			if len(output.Vpcs) < 1 {
 				return WaitForRetry
 			}
@@ -86,7 +88,7 @@ func WaitSubnetStatus(stateBag multistep.StateBag, subnetId, status string) (*vp
 			if err != nil {
 				return WaitForRetry
 			}
-			output := i.(vpc.DescribeSubnetsOutput)
+			output := i.(*vpc.DescribeSubnetsOutput)
 			if len(output.Subnets) < 1 {
 				return WaitForRetry
 			}
@@ -118,7 +120,7 @@ func WaitImageStatus(stateBag multistep.StateBag, imageId, status string) (*ecs.
 			if err != nil {
 				return WaitForRetry
 			}
-			output := i.(ecs.DescribeImagesOutput)
+			output := i.(*ecs.DescribeImagesOutput)
 			if len(output.Images) < 1 {
 				return WaitForRetry
 			}
@@ -150,7 +152,7 @@ func WaitEcsStatus(stateBag multistep.StateBag, ecsId, status string) (*ecs.Desc
 			if err != nil {
 				return WaitForRetry
 			}
-			output := i.(ecs.DescribeInstancesOutput)
+			output := i.(*ecs.DescribeInstancesOutput)
 			if len(output.Instances) < 1 {
 				return WaitForRetry
 			}
@@ -182,7 +184,7 @@ func WaitSgClean(stateBag multistep.StateBag, sgId string) error {
 			if err != nil {
 				return WaitForRetry
 			}
-			output := i.(vpc.DescribeNetworkInterfacesOutput)
+			output := i.(*vpc.DescribeNetworkInterfacesOutput)
 			if len(output.NetworkInterfaceSets) == 0 {
 				return WaitForSuccess
 			}

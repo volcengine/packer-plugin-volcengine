@@ -24,6 +24,7 @@ func (s *stepValidVolcengineImage) Run(ctx context.Context, stateBag multistep.S
 	if err != nil {
 		return Halt(stateBag, err, "Error querying volcengine image")
 	}
+
 	ui.Message(fmt.Sprintf("Found volcengine image ID: %s", s.SourceImageId))
 	return multistep.ActionContinue
 }

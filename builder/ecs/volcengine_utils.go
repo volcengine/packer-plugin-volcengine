@@ -7,15 +7,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/packer-plugin-sdk/communicator"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
-func SSHHost(c communicator.Config) func(multistep.StateBag) (string, error) {
+func SSHHost() func(multistep.StateBag) (string, error) {
 	return func(stateBag multistep.StateBag) (string, error) {
-		publicIp := stateBag.Get("publicIp").(string)
-		return publicIp, nil
+		var ip string
+		if stateBag.Get("PublicIp") != nil {
+			ip = stateBag.Get("PublicIp").(string)
+		} else {
+			ip = stateBag.Get("PrivateIp").(string)
+		}
+		return ip, nil
 	}
 }
 

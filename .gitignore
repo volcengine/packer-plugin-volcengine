@@ -21,7 +21,7 @@ packer-test*.log
 
 *.received.txt
 *.received.json
-packer-plugin-ksyun
+packer-plugin-volcengine
 
 .idea/
 *.iml

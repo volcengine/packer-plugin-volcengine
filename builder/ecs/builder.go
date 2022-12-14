@@ -62,10 +62,17 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, []string, error) {
 
 func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (packer.Artifact, error) {
 	stateBag := new(multistep.BasicStateBag)
+	b.config.Client(stateBag)
+
 	stateBag.Put("hook", hook)
 	stateBag.Put("ui", ui)
 	stateBag.Put("config", &b.config)
-	stateBag.Put("client", b.config.client)
+
+	if b.config.VolcengineEcsConfig.Comm.Type == "" {
+		b.config.VolcengineEcsConfig.Comm.Type = "ssh"
+		b.config.VolcengineEcsConfig.Comm.SSHPort = 22
+		b.config.VolcengineEcsConfig.Comm.WinRMPort = 5895
+	}
 
 	//steps...
 	var steps []multistep.Step
@@ -93,7 +100,7 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 		},
 		&communicator.StepConnect{
 			Config:    &b.config.VolcengineEcsConfig.Comm,
-			Host:      SSHHost(b.config.VolcengineEcsConfig.Comm),
+			Host:      SSHHost(),
 			SSHConfig: b.config.VolcengineEcsConfig.Comm.SSHConfigFunc(),
 		},
 		&commonsteps.StepProvision{},

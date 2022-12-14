@@ -49,10 +49,21 @@ func (s *stepConfigVolcengineEcs) Run(ctx context.Context, stateBag multistep.St
 		ImageId:            volcengine.String(s.VolcengineEcsConfig.SourceImageId),
 		ZoneId:             volcengine.String(s.VolcengineEcsConfig.AvailabilityZone),
 		InstanceName:       volcengine.String(s.VolcengineEcsConfig.InstanceName),
-		KeyPairName:        volcengine.String(s.VolcengineEcsConfig.Comm.SSHKeyPairName),
 		InstanceChargeType: volcengine.String("PostPaid"),
 		Volumes:            volumes,
 		NetworkInterfaces:  networks,
+	}
+	//password/ssh/key
+	if s.VolcengineEcsConfig.Comm.SSHKeyPairName != "" {
+		input.KeyPairName = volcengine.String(s.VolcengineEcsConfig.Comm.SSHKeyPairName)
+	} else {
+		if s.VolcengineEcsConfig.Comm.SSHPassword != "" {
+			input.Password = volcengine.String(s.VolcengineEcsConfig.Comm.SSHPassword)
+		} else if s.VolcengineEcsConfig.Comm.WinRMPassword != "" {
+			input.Password = volcengine.String(s.VolcengineEcsConfig.Comm.WinRMPassword)
+		} else {
+			return Halt(stateBag, fmt.Errorf("no keypair or password set"), "Error creating new Ecs")
+		}
 	}
 
 	//userdata
@@ -68,11 +79,12 @@ func (s *stepConfigVolcengineEcs) Run(ctx context.Context, stateBag multistep.St
 	}
 	s.ecsId = *output.InstanceIds[0]
 
-	_, err = WaitEcsStatus(stateBag, s.ecsId, "RUNNING")
+	out, err := WaitEcsStatus(stateBag, s.ecsId, "RUNNING")
 	if err != nil {
 		return Halt(stateBag, err, "Error creating new Ecs")
 	}
 	stateBag.Put("instanceId", s.ecsId)
+	stateBag.Put("PrivateIp", *out.Instances[0].NetworkInterfaces[0].PrimaryIpAddress)
 	return multistep.ActionContinue
 }
 
