@@ -1,31 +1,20 @@
-# Packer Builder for Volcengine ECS
+# Packer Plugin Volcengine
+The `volcengine` multi-component plugin can be used with HashiCorp [Packer](https://www.packer.io)
+to create custom images. For the full list of available features for this plugin see [docs](docs).
 
-This is a [HashiCorp Packer](https://www.packer.io/) plugin for creating [Volcengine ECS](https://www.volcengine.com/product/ecs) image.
+## Installation
 
-## Requirements
-* [Go 1.15+](https://golang.org/doc/install)
-* [Packer](https://www.packer.io/intro/getting-started/install.html)
+### Using pre-built releases
 
-## Build & Installation
+#### Using the `packer init` command
 
-### Install from source:
+Starting from version 1.7, Packer supports a new `packer init` command allowing
+automatic installation of Packer plugins. Read the
+[Packer documentation](https://www.packer.io/docs/commands/init) for more information.
 
-Clone repository to `$GOPATH/src/github.com/volcengine/packer-plugin-volcengine`
+To install this plugin, copy and paste this code into your Packer configuration .
+Then, run [`packer init`](https://www.packer.io/docs/commands/init).
 
-```sh
-$ mkdir -p $GOPATH/src/github.com/volcengine; 
-$ cd $GOPATH/src/github.com/volcengine
-$ git clone git@github.com:volcengine/packer-plugin-volcengine.git
-```
-
-Enter the provider directory and build the provider
-
-```sh
-$ cd $GOPATH/src/github.com/volcengine/packer-plugin-volcengine
-$ make install
-```
-
-### Install from HCL:
 ```hcl
 packer {
   required_plugins {
@@ -38,56 +27,37 @@ packer {
 ```
 
 
-### Install from release:
+#### Manual installation
 
-* Download binaries from the [releases page](https://github.com/volcengine/packer-plugin-volcengine/releases).
-* [Install](https://www.packer.io/docs/extending/plugins.html#installing-plugins) the plugin, or simply put it into the same directory with JSON templates.
-* Move the downloaded binary to `~/.packer.d/plugins/`
-
-## Usage for ECS
-Here is a sample template, which you can also find in the `example/` directory
-```json
-{
-  "variables": {
-    "access_key": "{{ env `VOLCENGINE_ACCESS_KEY` }}",
-    "secret_key": "{{ env `VOLCENGINE_SECRET_KEY` }}"
-  },
-  "builders": [{
-    "type":"volcengine-ecs",
-    "access_key":"{{user `access_key`}}",
-    "secret_key":"{{user `secret_key`}}",
-    "region":"cn-beijing",
-    "target_image_name":"packer_xym_test",
-    "source_image_id":"image-38deyjkaisf6kiyswzn9",
-    "availability_zone": "cn-beijing-b",
-    "instance_type":"ecs.g2i.large",
-    "ssh_username":"root",
-    "temporary_key_pair_name": "packer-key",
-    "ssh_clear_authorized_keys": true,
-    "associate_public_ip_address": true,
-    "public_ip_id": "eip-13frvze8oo8hs3n6nu4m13mgo",
-    "system_disk_size": "50",
-    "system_disk_type": "ESSD_PL0"
-  }],
-  "provisioners": [{
-    "type": "shell",
-    "inline": [
-      "sleep 30",
-      "yum install mysql -y"
-    ]
-  }]
-}
-
-```
-Enter the API user credentials in your terminal with the following commands. Replace the <AK> and <SK> with your user details.
-```sh
-export VOLCENGINE_ACCESS_KEY=<AK>
-export VOLCENGINE_SECRET_KEY=<SK>
-```
-Then run Packer using the example template with the command underneath.
-```
-# use for ECS
-packer build example/volcengine.json
-```
+You can find pre-built binary releases of the plugin [here](https://github.com/volcengine/packer-plugin-volcengine/releases).
+Once you have downloaded the latest archive corresponding to your target OS,
+uncompress it to retrieve the plugin binary file corresponding to your platform.
+To install the plugin, please follow the Packer documentation on
+[installing a plugin](https://www.packer.io/docs/extending/plugins/#installing-plugins).
 
 
+### From Sources
+
+If you prefer to build the plugin from sources, clone the GitHub repository
+locally and run the command `go build` from the root
+directory. Upon successful compilation, a `packer-plugin-volcengine` plugin
+binary file can be found in the root directory.
+To install the compiled plugin, please follow the official Packer documentation
+on [installing a plugin](https://www.packer.io/docs/extending/plugins/#installing-plugins).
+
+
+### Configuration
+
+For more information on how to configure the plugin, please read the
+documentation located in the [`docs/`](docs) directory.
+
+
+## Contributing
+
+* If you think you've found a bug in the code or you have a question regarding
+  the usage of this software, please reach out to us by opening an issue in
+  this GitHub repository.
+* Contributions to this project are welcome: if you want to add a feature or a
+  fix a bug, please do so by opening a Pull Request in this GitHub repository.
+  In case of feature contribution, we kindly ask you to open an issue to
+  discuss it beforehand.
