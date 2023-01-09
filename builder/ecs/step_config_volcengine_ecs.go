@@ -71,7 +71,7 @@ func (s *stepConfigVolcengineEcs) Run(ctx context.Context, stateBag multistep.St
 		input.UserData = volcengine.String(s.VolcengineEcsConfig.UserData)
 	}
 
-	ui.Say(fmt.Sprintf("Creating new ecs with name %s", s.VolcengineEcsConfig.VpcName))
+	ui.Say(fmt.Sprintf("Creating new ecs with name %s", s.VolcengineEcsConfig.InstanceName))
 
 	output, err := client.EcsClient.RunInstancesWithContext(ctx, &input)
 	if err != nil {

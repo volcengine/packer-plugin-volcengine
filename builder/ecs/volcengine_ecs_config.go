@@ -1,3 +1,4 @@
+//go:generate packer-sdc struct-markdown
 package ecs
 
 import "github.com/hashicorp/packer-plugin-sdk/communicator"
