@@ -38,4 +38,6 @@ type VolcengineEcsConfig struct {
 	DataDisks       []VolcengineDataDiskConfig `mapstructure:"data_disks" required:"false"`
 	InstanceName    string                     `mapstructure:"instance_name" required:"false"`
 	UserData        string                     `mapstructure:"user_data" required:"false"`
+	//hpc
+	HpcClusterId string `mapstructure:"hpc_cluster_id" required:"false"`
 }
