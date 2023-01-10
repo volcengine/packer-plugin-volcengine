@@ -1,0 +1,80 @@
+---
+description: |
+  The `volcengine-ecs` Packer builder plugin provide the capability to build
+  customized images based on an existing base images.
+page_title: Volcengine Image Builder
+nav_title: Volcengine ECS
+---
+
+# Volcengine Image Builder
+
+Type: `volcengine-ecs`
+Artifact BuilderId: `volcengine.ecs`
+
+The `volcengine-ecs` Packer builder plugin provide the capability to build
+customized images based on an existing base images.
+
+## Configuration Reference
+
+The following configuration options are available for building Volcengine images.
+In addition to the options listed here,
+a [communicator](/packer/docs/templates/legacy_json_templates/communicator) can be configured for this builder.
+
+### Required:
+
+@include 'builder/ecs/VolcengineAuthenticationConfig-required.mdx'
+
+@include 'builder/ecs/VolcengineEcsConfig-required.mdx'
+
+### Optional:
+
+@include 'builder/ecs/VolcengineAuthenticationConfig-not-required.mdx'
+
+@include 'builder/ecs/VolcengineEcsConfig-not-required.mdx'
+
+@include 'packer-plugin-sdk/communicator/SSHTemporaryKeyPair-not-required.mdx'
+
+@include 'packer-plugin-sdk/communicator/SSH-Key-Pair-Name-not-required.mdx'
+
+@include 'packer-plugin-sdk/communicator/SSH-Private-Key-File-not-required.mdx'
+
+@include 'packer-plugin-sdk/communicator/SSH-Agent-Auth-not-required.mdx'
+
+# Disk Devices Configuration:
+
+@include 'builder/ecs/VolcengineDataDiskConfig-required.mdx'
+
+## Basic Example
+
+```json
+{
+  "variables": {
+    "access_key": "{{ env `VOLCENGINE_ACCESS_KEY` }}",
+    "secret_key": "{{ env `VOLCENGINE_SECRET_KEY` }}"
+  },
+  "builders": [{
+    "type":"volcengine-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region":"cn-beijing",
+    "target_image_name":"packer_xym_test",
+    "source_image_id":"image-38deyjkaisf6kiyswzn9",
+    "availability_zone": "cn-beijing-b",
+    "instance_type":"ecs.g2i.large",
+    "ssh_username":"root",
+    "temporary_key_pair_name": "packer-key",
+    "ssh_clear_authorized_keys": true,
+    "associate_public_ip_address": true,
+    "public_ip_id": "eip-13frvze8oo8hs3n6nu4m13mgo",
+    "system_disk_size": "50",
+    "system_disk_type": "ESSD_PL0"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "yum install mysql -y"
+    ]
+  }]
+}
+```
