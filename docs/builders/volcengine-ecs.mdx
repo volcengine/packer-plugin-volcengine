@@ -48,8 +48,30 @@ a [communicator](/packer/docs/templates/legacy_json_templates/communicator) can 
 
 Here is a basic example for Volcengine.
 
-<Tabs>
-<Tab heading="JSON">
+### Example for Use Hcl
+
+```hcl
+source "volcengine-ecs" "foo" {
+    associate_public_ip_address = true
+    availability_zone           = "cn-beijing-a"
+    instance_type               = "ecs.g1e.large"
+    source_image_id             = "image-yby53q82s721qhil65"
+    ssh_clear_authorized_keys   = true
+    ssh_username                = "root"
+    system_disk_size            = "50"
+    system_disk_type            = "ESSD_PL0"
+    target_image_name           = "packer_test"
+    temporary_key_pair_name     = "packer-key"
+}
+
+build {
+    sources = ["source.volcengine-ecs.foo"]
+    provisioner "shell" {
+        inline = ["sleep 30", "yum install mysql -y"]
+    }
+}
+```
+### Example for Use Json
 ```json
 {
   "variables": {
@@ -82,29 +104,3 @@ Here is a basic example for Volcengine.
   }]
 }
 ```
-</Tab>
-
-<Tab heading="HCL2">
-```hcl
-source "volcengine-ecs" "foo" {
-    associate_public_ip_address = true
-    availability_zone           = "cn-beijing-a"
-    instance_type               = "ecs.g1e.large"
-    source_image_id             = "image-yby53q82s721qhil65"
-    ssh_clear_authorized_keys   = true
-    ssh_username                = "root"
-    system_disk_size            = "50"
-    system_disk_type            = "ESSD_PL0"
-    target_image_name           = "packer_test"
-    temporary_key_pair_name     = "packer-key"
-}
-
-build {
-    sources = ["source.volcengine-ecs.foo"]
-    provisioner "shell" {
-        inline = ["sleep 30", "yum install mysql -y"]
-    }
-}
-```
-</Tab>
-</Tabs>
