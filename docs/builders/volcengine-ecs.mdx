@@ -48,8 +48,6 @@ a [communicator](/packer/docs/templates/legacy_json_templates/communicator) can 
 
 Here is a basic example for Volcengine.
 
-<Tabs>
-<Tab heading="JSON">
 ```json
 {
   "variables": {
@@ -82,9 +80,6 @@ Here is a basic example for Volcengine.
   }]
 }
 ```
-</Tab>
-
-<Tab heading="HCL2">
 ```hcl
 source "volcengine-ecs" "foo" {
     associate_public_ip_address = true
@@ -106,5 +101,3 @@ build {
     }
 }
 ```
-</Tab>
-</Tabs>
