@@ -3,7 +3,7 @@
 integration {
   name = "Volcengine"
   description = "TODO"
-  identifier = "packer/BrandonRomano/volcengine"
+  identifier = "packer/volcengine/volcengine"
   component {
     type = "builder"
     name = "Volcengine Image Builder"
