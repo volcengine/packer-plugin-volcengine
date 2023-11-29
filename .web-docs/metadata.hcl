@@ -7,6 +7,6 @@ integration {
   component {
     type = "builder"
     name = "Volcengine Image Builder"
-    slug = "volcengine-ecs"
+    slug = "ecs"
   }
 }
