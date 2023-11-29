@@ -25,5 +25,5 @@ $ packer plugins install github.com/volcengine/ecs
 
 #### Builders
 
-- [volcengine-ecs builder](/packer/integrations/volcengine/latest/components/builder/ecs) - provides the capability to build customized images based
+- [volcengine-ecs builder](/packer/integrations/volcengine/volcengine/latest/components/builder/ecs) - provides the capability to build customized images based
   on an existing base image.
