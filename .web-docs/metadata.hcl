@@ -2,7 +2,7 @@
 # https://github.com/hashicorp/integration-template#metadata-configuration
 integration {
   name = "Volcengine"
-  description = "TODO"
+  description = "A multi-component plugin to create custom images."
   identifier = "packer/volcengine/volcengine"
   component {
     type = "builder"
